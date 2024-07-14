@@ -73,8 +73,7 @@ user1.lastname;
 
 ## 为什么使用 Object.create() 来创建对象
 
-Object.create()方法可以创建一个新对象，并通过传入已有的对象来做作为新创建的对象的**proto**。
-利用这个特性，通过传入构造器的 Contructor.prototype 可以解决新对象 **proto** 指向问题。
+Object.create()方法可以创建一个新对象，并通过传入已有的对象来做作为新创建的对象的**proto**，以此实现继承的效果。
 
 ```js
 const person = {
@@ -97,6 +96,8 @@ me.__proto__; // print person
 
 ### 手动实现 Object.create API
 
+简单来说，就是创建空（构造）函数，通过关联它的原型，来实现继承
+
 ```js
 Object.prototype.create = function (proto) {
   function F() {}
@@ -105,7 +106,15 @@ Object.prototype.create = function (proto) {
 };
 ```
 
-## 参考文章
+### Object.create(null)
+
+使用 Object.create(null) ，能得到一个没有任何继承痕迹的对象
+
+```js
+let obj = Object.create(null);
+```
+
+## 参考资料
 
 [new](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new)
 [Object.create()](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/create)

@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -7,24 +7,26 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'JavaScript', link: '/JavaScript/new' },
-      { text: 'React', link: '/React' },
-      { text: "Algorithms", link: '/Algorithms'}
+      { text: "JavaScript", link: "/JavaScript/new" },
+      { text: "React", link: "/React" },
+      { text: "Algorithms", link: "/Algorithms" },
     ],
 
     sidebar: {
-      '/JavaScript': [
+      "/JavaScript": [
         {
-          text: 'JavaScript 基础',
+          text: "JavaScript 基础",
           items: [
-            { text: 'new 运算符', link: '/JavaScript/new' }
-          ]
-        }
-      ]
+            { text: "new 运算符", link: "/JavaScript/new" },
+            { text: "闭包", link: "/JavaScript/closure" },
+            { text: "浅拷贝和深拷贝", link: "/JavaScript/copy" },
+          ],
+        },
+      ],
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
-    ]
-  }
-})
+      { icon: "github", link: "https://github.com/zuckstar/fe-blog" },
+    ],
+  },
+});
