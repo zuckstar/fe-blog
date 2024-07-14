@@ -9,7 +9,7 @@ export default defineConfig({
     nav: [
       { text: "JavaScript", link: "/JavaScript/new" },
       { text: "React", link: "/React" },
-      { text: "Algorithms", link: "/Algorithms" },
+      { text: "数据结构和算法", link: "/Algorithms" },
     ],
 
     sidebar: {
@@ -20,6 +20,7 @@ export default defineConfig({
             { text: "new 运算符", link: "/JavaScript/new" },
             { text: "闭包", link: "/JavaScript/closure" },
             { text: "浅拷贝和深拷贝", link: "/JavaScript/copy" },
+            { text: '原型、原型链和继承', link: "/JavaScript/prototype" },
           ],
         },
       ],
