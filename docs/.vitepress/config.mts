@@ -4,6 +4,7 @@ import { defineConfig } from "vitepress";
 export default defineConfig({
   title: "终级前端面试指南",
   description: "一个记录前端面经的个人博客",
+  base: '/fe-blog/',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
