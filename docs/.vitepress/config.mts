@@ -21,7 +21,8 @@ export default defineConfig({
             { text: "闭包", link: "/JavaScript/closure" },
             { text: "浅拷贝和深拷贝", link: "/JavaScript/copy" },
             { text: '原型、原型链和继承', link: "/JavaScript/prototype" },
-            { text: 'call、apply、bind 方法', link: '/JavaScript/call_apply_bind'}
+            { text: 'call、apply、bind 方法', link: '/JavaScript/call_apply_bind'},
+            { text: '事件', link: '/JavaScript/event.md'},
           ],
         },
       ],
