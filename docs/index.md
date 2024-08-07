@@ -3,13 +3,13 @@
 layout: home
 
 hero:
-  name: "终级前端面试指南"
+  name: "前端面试深入指南"
   text: "Jamie的前端知识库"
-  tagline: 一个自我成长的前端掌握的技能点
+  tagline: 面向高级前端工程师的知识体系图书馆
   actions:
     - theme: brand
       text: 博客介绍
-      link: /markdown-examples
+      link: /introduce
     - theme: alt
       text: JavaScript
       link: /JavaScript
@@ -18,6 +18,9 @@ hero:
       link: /api-examples
     - theme: alt
       text: React
+      link: /React
+    - theme: alt
+      text: 浏览器原理
       link: /markdown-examples
     - theme: alt
       text: 计算机网络和HTTP
