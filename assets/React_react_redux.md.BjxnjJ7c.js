@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as a}from"./chunks/framework.DH221WtE.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"React/react_redux.md","filePath":"React/react_redux.md"}'),r={name:"React/react_redux.md"};function c(o,s,n,_,d,p){return a(),t("div")}const f=e(r,[["render",c]]);export{m as __pageData,f as default};
