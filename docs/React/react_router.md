@@ -113,8 +113,390 @@ history 模式，使用 HTML5 的 History API 来管理路由
 
 ## React Router 用法回顾
 
-## React Router 实现原理
+在应用入口处 index.js 添加:
+
+```js
+import { BrowserRouter } from "react-router-dom";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);
+```
+
+使用方式：
+
+```javascript
+import { Routes, Route, Link } from "react-router-dom";
+
+const Home = () => <h1>Home Page</h1>;
+const About = () => <h1>About Page</h1>;
+const Contact = () => <h1>Contact Page</h1>;
+const NotFound = () => <h1>404 Not Found</h1>;
+
+function App() {
+  return (
+    <div className="App">
+      <h1> Welcome to React Router!</h1>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/about">About</Link>
+          </li>
+          <li>
+            <Link to="/contact">Contact</Link>
+          </li>
+        </ul>
+      </nav>
+      <Routes>
+        <Route exact path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </div>
+  );
+}
+
+export default App;
+```
+
+总结：
+
+React Router 在项目中的使用，需要配合 BrowserRouter、Routes、Route 和 Link 组件：
+
+![alt text](image-1.png)
+
+- 路由器组件： `<BrowserRouter>` 和 `<HashRouter>`， 路由器组件作为根容器的组件，`<Route>` 等路由组件必须被包裹在根容器内才能正常使用
+- 路由器匹配组件：`<Routes>` 和 `<Route>`，路由匹配组件通过匹配 path，渲染对应组件
+- 导航组件：`<Link>` 和 `<NavLink>`， 导航组件起到类似 a 标签跳转页面的作用
+
+## react-router-dom 实现原理
+
+核心思想(react-router-dom v5 版本)
+
+1. 监听 url 变化：使用 history 库
+2. 匹配 path 路径
+3. 渲染对应组件
+
+### Link 组件
+
+Link 组件本质就是 a 标签，阻止 a 标签的 onClick 方法的默认行为，然后把跳转的路由传递给 history 对象。
+
+```js
+import { useContext } from "react";
+import RouterContext from "./RouterContext";
+
+export default function Link(props) {
+  const { to, children } = props;
+  const context = useContext(RouterContext);
+
+  function onClick(e) {
+    // 阻止默认行为
+    e.preventDefault();
+    // 使用 Router 组件传递的 context 中的 history 对象来改变路由
+    context.history.push(to);
+  }
+  return (
+    <a href={to} onClick={onClick}>
+      {children}
+    </a>
+  );
+}
+```
+
+### BrowserRouter 组件
+
+context 代码
+
+```js
+import React from "react";
+
+const RouterContext = React.createContext();
+
+export default RouterContext;
+```
+
+BrowserRouter 负责引入 history 对象
+
+```js
+import React from "react";
+import { createBrowserHistory } from "history";
+import Router from "./Router";
+
+export default function BrowserRouter(props) {
+  const history = createBrowserHistory();
+  return <Router history={history}>{props.children}</Router>;
+}
+```
+
+### Router 组件
+
+BrowserRouter 引用了 Router 组件。Router 组件缓存了 history 对象上下文，并注册路由监听事件，把路由信息透传下去。
+
+```js
+import React, { useState, useEffect } from "react";
+import RouterContext from "./RouterContext";
+
+export default function Router(props) {
+  const { history } = props;
+  const [state, setState] = useState({ location: history.location });
+
+  function computeRootMatch(pathname) {
+    return { path: "/", url: "/", params: {}, isExact: pathname === "/" };
+  }
+
+  useEffect(() => {
+    const unlisten = history.listen(({ location }) => {
+      console.log("location", location);
+      setState({ location });
+    });
+    return () => {
+      unlisten();
+    };
+  });
+
+  const routeObj = {
+    history: history,
+    location: state.location,
+    match: computeRootMatch(state.location.pathname),
+  };
+
+  return (
+    <RouterContext.Provider value={routeObj}>
+      {props.children}
+    </RouterContext.Provider>
+  );
+}
+```
+
+### Routes 组件
+
+Routes 组件即 react-router-dom v5 版本中 Switch 组件的实现，这里实现的思路主要还是参照 v5 版本的代码，只是改了个名字， 语法上更符合 v6 的使用习惯。
+
+Routes 组件找到第一个匹配路径的组件。
+
+```js
+import React, { useContext } from "react";
+import matchPath from "./matchPath";
+import RouterContext from "./RouterContext";
+
+function Routes(props) {
+  const context = useContext(RouterContext);
+  const location = props.location || context.location;
+
+  let element; // 匹配到的元素
+  let match; // 标记是否匹配
+
+  // 使用 React.Children.forEach 来遍历 Routes 的子组件
+  React.Children.forEach(props.children, (child) => {
+    if (match == null && React.isValidElement(child)) {
+      element = child;
+
+      const path = child.props.path;
+
+      match = path
+        ? matchPath(location.pathname, { ...child.props, path })
+        : context.match;
+    }
+  });
+
+  return match
+    ? React.cloneElement(element, { location, computedMatch: match })
+    : null;
+}
+
+export default Routes;
+```
+
+### Route 组件
+
+根据 `pathname` 匹配结果控制是否渲染组件
+
+```js
+import React, { useContext } from "react";
+import RouterContext from "./RouterContext";
+import matchPath from "./matchPath";
+
+export default function Route(props) {
+  const context = useContext(RouterContext);
+  const { children, element, render } = props;
+  const { location } = context;
+
+  let match = null;
+
+  if (props.computedMatch) {
+    // 使用 Switch 组件计算的 match 值
+    match = props.computedMatch;
+  } else if (props.path) {
+    match = matchPath(location.pathname, props);
+  } else {
+    match = context.match;
+  }
+
+  const routeProps = { ...context, match, location };
+
+  let result = null;
+
+  if (routeProps.match) {
+    if (children) {
+      result = typeof children === "function" ? children(routeProps) : null;
+    } else if (element) {
+      result = React.cloneElement(element, routeProps);
+    } else if (render) {
+      result = render(routeProps);
+    }
+  }
+
+  return (
+    <RouterContext.Provider value={routeProps}>{result}</RouterContext.Provider>
+  );
+}
+```
+
+### matchPath 方法
+
+这里简化了 pathname 的匹配逻辑，只做了全等的比较，实际上的 matchPath 更为复杂，需要做正则匹配，以及解析 params 参数
+
+```js
+function matchPath(pathname, options = {}) {
+  const { path } = options;
+
+  if (pathname === path) {
+    // 模拟真实返回的对象
+    return {
+      path,
+      url: "",
+      isExact: true,
+      params: {}, // path 中解析出的参数
+    };
+  } else {
+    return null;
+  }
+}
+
+export default matchPath;
+```
 
 ## React Router 传参方式
 
+### params 传参
+
+配置：
+
+```js
+{ path: '/detail/:id/:name', component: Detail }
+```
+
+获取：用 `useParams()` hooks 获取 parmas 传参
+
+```js
+import { useHistory, useParams } from "react-router-dom";
+const history = useHistory();
+// 跳转路由
+history.push("/detail/1/jamie");
+// 获取路由参数
+const params = useParams();
+console.log(params); // {id: "1",name:"jamie"}
+```
+
+### search 传参
+
+使用 `useQuery()` hooks 获取 location 中的 search 参数
+
+```js
+import { useHistory } from "react-router-dom";
+const history = useHistory();
+// 路由跳转  地址栏：/detail?id=2
+history.push("/detail?id=2");
+// 或者
+history.push({ pathname: "/detail", search: "?id=2" });
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+const query = useQuery();
+const id = query.get("id"); //2
+```
+
+### state 传参
+
+使用 `useLocation()` 获取 state 变量
+
+```js
+import { useHistory, useLocation } from "react-router-dom";
+const history = useHistory();
+const item = { id: 1, name: "jamie" };
+// 路由跳转
+history.push(`/user/role/detail`, { id: item });
+// 参数获取
+const { state } = useLocation();
+console.log(state); // {id:1,name:"jamie"}
+```
+
+## react-router-dom v6 和 v5 有什么区别
+
+v5 和 v6 的区别
+
+1、Switch 名称变为 Routes
+
+2、Route 组件 component 属性 改为 element，使用标签形式传递
+
+```js
+<Route exact path="listPage" element={<ListPage />} />
+```
+
+3、Redirect 改用 Navigate
+
+```js
+<Route path="/" element={<Navigate replace to="/welcome" />} />
+```
+
+4、 使用 Outle 组件，此组件是一个占位符，告诉 React Router 嵌套的内容应该放到哪里
+
+```js
+import { Outlet } from "react-router-dom";
+const Login = () => {
+  return;
+  <section>
+    <h1>Login</h1>
+    <Outlet />
+  </section>;
+};
+export default Login;
+```
+
+5、 v6 使用 useNavigate 实现编程式导航，useHistory 被移除
+
+```js
+const navigate = useNavigate();
+// history.push(path) 改为 navigate(path)
+// history.replace(path) 改为 navigate(path,{replace:true})
+// history.goBack 改为 navigate(-1)
+```
+
+6、 使用 hooks 获取参数
+
+- useParams 获取动态路由的值
+- useSearchParams 获取查询字符串的值
+
+```js
+// 获取动态路由的值
+const params = useParams();
+
+// 获取查询字符串的值
+const [searchParams, setSearchParams] = useSearchParams();
+```
+
 ## 参考资料
+
+- [深入浅出解析 React Router 源码](https://mp.weixin.qq.com/s/hcAMubPlse4cK9y_-mS5yQ)
+- [react-router-dom 使用及源码实现](https://juejin.cn/post/7006210203301445669)
+- [一文读懂 react-router 原理](https://juejin.cn/post/7213956241612914749)
+- [react-router 路由传参的三种方式](https://juejin.cn/post/7018857346545745933)
