@@ -33,7 +33,10 @@ export default defineConfig({
       "/React": [
         {
           text: "React 技术栈",
-          items: [{ text: "React Router", link: "/React/react_router" }],
+          items: [
+            { text: "React Router", link: "/React/react_router" },
+            { text: "setState", link: "/React/set_state" },
+          ],
         },
       ],
     },

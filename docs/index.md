@@ -15,7 +15,7 @@ hero:
       link: /JavaScript
     - theme: alt
       text: 数据结构和算法
-      link: /api-examples
+      link: /Algorithms
     - theme: alt
       text: React
       link: /React
@@ -24,6 +24,9 @@ hero:
       link: /markdown-examples
     - theme: alt
       text: 计算机网络和HTTP
+      link: /api-examples
+    - theme: alt
+      text: Node 和服务端知识
       link: /api-examples
 
 features:
