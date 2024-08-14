@@ -14,6 +14,9 @@ hero:
       text: JavaScript
       link: /JavaScript
     - theme: alt
+      text: CSS
+      link: /CSS
+    - theme: alt
       text: 数据结构和算法
       link: /Algorithms
     - theme: alt
