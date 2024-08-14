@@ -36,6 +36,7 @@ export default defineConfig({
           items: [
             { text: "React Router", link: "/React/react_router" },
             { text: "setState", link: "/React/set_state" },
+            { text: "fiber 架构", link: "/React/fiber" },
           ],
         },
       ],
