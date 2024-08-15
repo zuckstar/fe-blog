@@ -36,6 +36,7 @@ export default defineConfig({
           items: [
             { text: "flex 布局", link: "/CSS/flex" },
             { text: "什么是 BFC?", link: "/CSS/bfc" },
+            { text: "移动端适配", link: "/CSS/mobile" },
           ],
         },
       ],

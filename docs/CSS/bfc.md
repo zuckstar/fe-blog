@@ -143,6 +143,46 @@ BFC 的三个作用：
 
 ![p1-6](./p1-6.png)
 
+## 常见面试题
+
+### 怎么触发 BFC，BFC 有什么应用场景？
+
+文档流分为 定位流、浮动流、普通流 三种。
+
+定位流：postion：absolute, fixed
+
+浮动流：float
+
+普通流：元素按先后顺序从上到下布局
+
+触发方式（能够形成独立的渲染区域）：
+
+- 浮动元素
+
+- overflow 值不为 visible
+
+- display 值为 inline-block、inline-table、inline-grid
+
+- 绝对定位元素：postion：absolute, fixed
+
+BFC 特性：
+
+- 具有 BFC 特性的元素可以看作是隔离了的独立容器，容器内的元素不会影响到容器外面的元素。
+
+- BFC 内部的块级盒子会在垂直方向上一个一个排列
+
+- 浮动盒的区域不会和 BFC 重叠
+
+- 计算 BFC 高度时，浮动元素也会参与计算
+
+BFC 应用：
+
+- 防止外边距重叠
+
+- 解决浮动元素高度塌陷的问题
+
+- 计算 BFC 高度时，浮动元素也会参与计算
+
 ## 参考文章
 
 [10 分钟理解 BFC 原理](https://zhuanlan.zhihu.com/p/25321647)

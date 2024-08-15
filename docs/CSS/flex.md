@@ -216,6 +216,24 @@ align-self 属性允许单个项目有与其他项目不一样的对齐方式，
 
 该属性可能取 6 个值，除了 auto，其他都与 align-items 属性完全一致。
 
+## 常见面试题
+
+### flex 布局下，怎么改变元素顺序？
+
+可以使用 order 属性来改变 flex 布局下的元素顺序。order 属性指定了 flex 容器内部各个项目的排列顺序，其默认值为 0。支持负数。
+
+1. 将元素的父级元素定义为 flex 容器，使用 `display: flex;` 或者 `display: inline-flex`
+
+2. 为每个子元素设置 order 属性，值越小的元素会在前面，值相等的元素按照文档流原始顺序排列
+
+### flex: auto 是什么意思？
+
+flex 是复合属性，是 flex-grow、flex-shrink、flex-basis 的简写，默认值是 0 1 auto，后两个属性可选。
+
+`flex: auto` 是 `flex: 1 1 auto;` 的简写，等同于 `flex: 1;`，即元素尺寸可以弹性增大，也可以弹性变小，具有十足的弹性，在尺寸不足时会优先最大化吃醋内容。
+
+使用场景：当希望元素充分利用剩余空间，但是各自尺寸按照各自内容进行分配的时候，使用使用 `flex: auto;`
+
 ## 转载自文章
 
 [Flex 布局教程：语法篇 - 阮一峰](http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html)
