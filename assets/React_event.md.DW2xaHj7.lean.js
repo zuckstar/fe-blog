@@ -1,0 +1,1 @@
+import{_ as s,c as i,o as a,a2 as n}from"./chunks/framework.DH221WtE.js";const y=JSON.parse('{"title":"React 事件","description":"","frontmatter":{},"headers":[],"relativePath":"React/event.md","filePath":"React/event.md"}'),p={name:"React/event.md"},t=n("",41),l=[t];function h(k,e,E,r,d,g){return a(),i("div",null,l)}const o=s(p,[["render",h]]);export{y as __pageData,o as default};
