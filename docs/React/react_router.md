@@ -6,7 +6,7 @@ Web 应用原本是后端路由，即由服务器根据浏览器 URL 渲染指�
 
 - 后端路由：URL 变化触发服务端渲染页面，服务端渲染页面利于 SEO
 
-- 前端路由：单页应用 URL 变化触发前端渲染，使用客户端算力解决页面构建，缓解服务器压力
+- 前端路由：单页应用 URL 变化触发前端渲染，无刷新的条件下切换显示不同的页面，使用客户端算力解决页面构建，缓解服务器压力
 
 ## 前端路由的几种模式
 
@@ -213,8 +213,6 @@ export default function Link(props) {
 
 ### BrowserRouter 组件
 
-context 代码
-
 ```js
 import React from "react";
 
@@ -238,7 +236,7 @@ export default function BrowserRouter(props) {
 
 ### Router 组件
 
-BrowserRouter 引用了 Router 组件。Router 组件缓存了 history 对象上下文，并注册路由监听事件，把路由信息透传下去。
+BrowserRouter 引用了 Router 组件。Router 组件缓存了 history 对象上下文，并注册路由监听事件，并且会将相应的路径传递给子组件
 
 ```js
 import React, { useState, useEffect } from "react";
@@ -493,6 +491,75 @@ const params = useParams();
 // 获取查询字符串的值
 const [searchParams, setSearchParams] = useSearchParams();
 ```
+
+## 常见面试题 (快问快答)
+
+### react-router 里的 Link 标签和 a 标签有什么区别？
+
+- 相较于 a 标签，屏蔽了默认的跳转行为，避免了不必要的重新渲染
+
+- Link 标签就是基于 a 标签的封装
+
+Link 跳转做了三件事情：
+
+- 有 onclick 就执行 onclick
+
+- click 的时候阻止 a 标签的默认事件
+
+- 根据 to 参数，传递给 href 执行跳转
+
+a 标签即普通的超链接，根据 href 跳转到指定页面
+
+### 说说你对 React Router 的理解？常用的 Router 组件有哪些？
+
+- React Router 本质：URL 发生变化，页面无刷新情况下，根据 URL 结果显示相应组件
+- React Router 包
+  - React-router
+  - React-router-dom（浏览器环境）
+  - React-router-native
+- React Router 有哪些组件
+  - BrowserRouter、HashRouter：监听路径改变，路径传递给子组件
+  - Route：路径匹配和渲染
+  - Link：a 链接，执行跳转操作
+  - NavLink：基于 Link 增加一些样式属性
+  - Switch：选择匹配第一个组件，后续的组件不需要再执行匹配
+  - Redirect：执行重定向操作
+- Hooks
+  - useHistory：获取 history 对象
+  - useParams：获取 params 参数
+  - useLocation：获取 location 对象
+- 参数传递
+  - 动态路由的方式：/detail/:id
+  - Search 传递参数: /detail?name=why
+  - To 传入对象（state）state 对象
+- 路由模式
+  - Hash 模式，HashRouter
+  - History 模式，BrowserRouter
+
+### 说说 React Router 有几种模式，以及实现原理？
+
+- 路由模式
+  - Hash 模式，HashRouter
+  - History 模式，BrowserRouter
+- 实现原理
+  - HashRouter：
+    - 监听：window.addEventListener('hashchange', callback);
+    - 跳转：`<a href="#/user" />;`
+    - 获取：location.hash;
+  - BrowserRouter：
+    - 监听：window.addEventListener("popstate", onPopState);
+    - 跳转：`<a href="/user" onClick={} >; e.preventDefault(); history.pushState();`
+    - 获取：location.pathname;
+
+### React Router v5 和 v6 版本有什么区别？
+
+- React Router v6 和 v5 有什么区别？
+  - Routes 替代 Switch
+  - `<Redirect />改用 <Navigate to={"aaa"} />, 实际上等同于 navigate(to, {replace: true, state}`
+  - 嵌套路由，Outlet 组件指明嵌套位置
+  - useNavigate 实现编程式导航：现代化、清晰、高效的编程导航方案
+    - Replace 选项
+  - useParams，useSearchParams 获取参数
 
 ## 参考资料
 

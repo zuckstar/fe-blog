@@ -33,7 +33,10 @@ export default defineConfig({
       "/CSS": [
         {
           text: "CSS 基础",
-          items: [{ text: "flex 布局", link: "/CSS/flex" }],
+          items: [
+            { text: "flex 布局", link: "/CSS/flex" },
+            { text: "什么是 BFC?", link: "/CSS/bfc" },
+          ],
         },
       ],
       "/React": [
