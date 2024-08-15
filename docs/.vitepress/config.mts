@@ -47,6 +47,7 @@ export default defineConfig({
             { text: "React Router", link: "/React/react_router" },
             { text: "setState", link: "/React/set_state" },
             { text: "fiber 架构", link: "/React/fiber" },
+            { text: "React 合成事件", link: "/React/event.md" },
           ],
         },
       ],
