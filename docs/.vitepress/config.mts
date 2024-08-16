@@ -18,6 +18,7 @@ export default defineConfig({
         {
           text: "JavaScript 基础",
           items: [
+            { text: "数据类型", link: "/JavaScript/basic_types.md" },
             { text: "new 运算符", link: "/JavaScript/new" },
             { text: "闭包", link: "/JavaScript/closure" },
             { text: "浅拷贝和深拷贝", link: "/JavaScript/copy" },
@@ -49,6 +50,7 @@ export default defineConfig({
             { text: "fiber 架构", link: "/React/fiber" },
             { text: "React 合成事件", link: "/React/event.md" },
             { text: "React 性能优化", link: "/React/react_optimization.md" },
+            { text: "Redux", link: "/React/react_redux.md" },
           ],
         },
       ],
