@@ -48,6 +48,7 @@ export default defineConfig({
             { text: "setState", link: "/React/set_state" },
             { text: "fiber 架构", link: "/React/fiber" },
             { text: "React 合成事件", link: "/React/event.md" },
+            { text: "React 性能优化", link: "/React/react_optimization.md" },
           ],
         },
       ],
