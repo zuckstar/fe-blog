@@ -54,6 +54,15 @@ export default defineConfig({
           ],
         },
       ],
+      "/Webpack": [
+        {
+          text: "Webpack",
+          items: [
+            { text: "Webpack 原理", link: "/Webpack" },
+            { text: "玩转 Webpack", link: "/Webpack/play" },
+          ],
+        },
+      ],
     },
 
     socialLinks: [

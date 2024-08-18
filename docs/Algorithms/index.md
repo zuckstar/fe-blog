@@ -26,6 +26,13 @@
 | [无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/description/) | 中等 | ✅       |
 | [螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/description/)                                              | 中等 | ✅       |
 
+## 递归和回溯
+
+| 算法                                                           | 难度 | 完成次数 |
+| -------------------------------------------------------------- | ---- | -------- |
+| [子集](https://leetcode.cn/problems/subsets/description)       | 中等 | ❌       |
+| [括号生成](https://leetcode.cn/problems/generate-parentheses/) | 中等 | ✅       |
+
 ## 树和图
 
 | 算法                                                                              | 难度 | 完成次数 |
@@ -46,6 +53,8 @@
 | ---------------------------------------------------------------------------------------------------- | ---- | -------- |
 | [数组中的第 K 个最大元素](https://leetcode.cn/problems/kth-largest-element-in-an-array/description/) | 中等 |          |
 | [手撕快速排序](https://leetcode.cn/problems/sort-an-array/description/)                              | 中等 | ❌       |
+| [搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/description)          | 中等 | ❌       |
+| [二分查找](https://leetcode.cn/problems/binary-search/)                                              | 简单 |          |
 
 ### 冒泡排序
 
@@ -112,12 +121,14 @@ var sortArray = function (nums) {
 
 ## 动态规划
 
-| 算法                                                                       | 难度 | 完成次数 |
-| -------------------------------------------------------------------------- | ---- | -------- |
-| [最大子数组和](https://leetcode.cn/problems/maximum-subarray/description/) | 中等 |          |
+| 算法                                                                                       | 难度 | 完成次数 |
+| ------------------------------------------------------------------------------------------ | ---- | -------- |
+| [最大子数组和](https://leetcode.cn/problems/maximum-subarray/description/)                 | 中等 | ❌       |
+| [最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/description/) | 中等 |          |
 
 ## 字符串处理
 
-| 算法                                                                | 难度 | 完成次数 |
-| ------------------------------------------------------------------- | ---- | -------- |
-| [字符串相加](https://leetcode.cn/problems/add-strings/description/) | 简单 |          |
+| 算法                                                                                                                                     | 难度 | 完成次数 |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ---- | -------- |
+| [字符串相加](https://leetcode.cn/problems/add-strings/description/)                                                                      | 简单 |          |
+| [字符串转整数](https://leetcode.cn/problems/string-to-integer-atoi/solutions/183164/zi-fu-chuan-zhuan-huan-zheng-shu-atoi-by-leetcode-/) | 中等 |          |
