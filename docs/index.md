@@ -27,7 +27,7 @@ hero:
       link: /markdown-examples
     - theme: alt
       text: 计算机网络和HTTP
-      link: /api-examples
+      link: /Network
     - theme: alt
       text: webpack
       link: /Webpack

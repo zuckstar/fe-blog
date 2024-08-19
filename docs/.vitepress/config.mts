@@ -7,6 +7,9 @@ export default defineConfig({
   base: "/fe-blog/",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
+    search: {
+      provider: "local",
+    },
     nav: [
       { text: "JavaScript", link: "/JavaScript" },
       { text: "React", link: "/React" },
@@ -28,6 +31,7 @@ export default defineConfig({
               link: "/JavaScript/call_apply_bind",
             },
             { text: "事件", link: "/JavaScript/event.md" },
+            { text: "代码题", link: "/JavaScript/code.md" },
           ],
         },
       ],
@@ -52,6 +56,12 @@ export default defineConfig({
             { text: "React 性能优化", link: "/React/react_optimization.md" },
             { text: "Redux", link: "/React/react_redux.md" },
           ],
+        },
+      ],
+      "/Network": [
+        {
+          text: "计算机网络",
+          items: [{ text: "CDN", link: "/Network/cdn" }],
         },
       ],
       "/Webpack": [
