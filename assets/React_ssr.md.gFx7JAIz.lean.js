@@ -1,1 +1,0 @@
-import{_ as a,c as e,o as l,a2 as t}from"./chunks/framework.DH221WtE.js";const S=JSON.parse('{"title":"服务端渲染 SSR","description":"","frontmatter":{},"headers":[],"relativePath":"React/ssr.md","filePath":"React/ssr.md"}'),r={name:"React/ssr.md"},i=t("",15),p=[i];function o(s,c,n,h,d,_){return l(),e("div",null,p)}const m=a(r,[["render",o]]);export{S as __pageData,m as default};
