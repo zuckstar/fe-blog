@@ -24,7 +24,7 @@ hero:
       link: /React
     - theme: alt
       text: 浏览器原理
-      link: /markdown-examples
+      link: /Browser
     - theme: alt
       text: 计算机网络和HTTP
       link: /Network

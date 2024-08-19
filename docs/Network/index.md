@@ -1,5 +1,4 @@
 # 计算机网络
 
-- HTTP
-- CDN
+- [CDN](./cdn.md)
 - DNS

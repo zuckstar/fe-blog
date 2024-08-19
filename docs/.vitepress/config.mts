@@ -64,6 +64,15 @@ export default defineConfig({
           items: [{ text: "CDN", link: "/Network/cdn" }],
         },
       ],
+      "/Browser": [
+        {
+          text: "浏览器原理",
+          items: [
+            { text: "浏览器缓存机制", link: "/Browser/cache" },
+            { text: "CORS 跨域", link: "/Browser/cors" },
+          ],
+        },
+      ],
       "/Webpack": [
         {
           text: "Webpack",
