@@ -68,6 +68,10 @@ export default defineConfig({
         {
           text: "浏览器原理",
           items: [
+            {
+              text: "浏览器事件循环机制",
+              link: "/Browser/eventloop",
+            },
             { text: "浏览器缓存机制", link: "/Browser/cache" },
             { text: "CORS 跨域", link: "/Browser/cors" },
           ],
