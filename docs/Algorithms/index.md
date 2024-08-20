@@ -41,11 +41,14 @@
 
 ## 链表
 
-| 算法                                                                      | 难度 | 完成次数 |
-| ------------------------------------------------------------------------- | ---- | -------- |
-| [合并两个有序链表](https://leetcode.cn/problems/merge-two-sorted-lists/)  | 简单 | ✅       |
-| [LRU 缓存](https://leetcode.cn/problems/lru-cache/description/)           | 中等 |          |
-| [反转链表](https://leetcode.cn/problems/reverse-linked-list/description/) | 简单 | ✅       |
+| 算法                                                                                   | 难度 | 完成次数 |
+| -------------------------------------------------------------------------------------- | ---- | -------- |
+| [合并两个有序链表](https://leetcode.cn/problems/merge-two-sorted-lists/)               | 简单 | ✅       |
+| [合并 k 个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/description/)    | 困难 | ✅       |
+| [LRU 缓存](https://leetcode.cn/problems/lru-cache/description/)                        | 中等 |          |
+| [反转链表](https://leetcode.cn/problems/reverse-linked-list/description/)              | 简单 | ✅       |
+| [K 个一组翻转链表](https://leetcode.cn/problems/reverse-nodes-in-k-group/description/) | 困难 |          |
+| [两数相加](https://leetcode.cn/problems/add-two-numbers/description/)                  | 中等 |          |
 
 ## 排序和查找
 
@@ -130,5 +133,5 @@ var sortArray = function (nums) {
 
 | 算法                                                                                                                                     | 难度 | 完成次数 |
 | ---------------------------------------------------------------------------------------------------------------------------------------- | ---- | -------- |
-| [字符串相加](https://leetcode.cn/problems/add-strings/description/)                                                                      | 简单 |          |
+| [字符串相加](https://leetcode.cn/problems/add-strings/description/)                                                                      | 简单 | ❌       |
 | [字符串转整数](https://leetcode.cn/problems/string-to-integer-atoi/solutions/183164/zi-fu-chuan-zhuan-huan-zheng-shu-atoi-by-leetcode-/) | 中等 |          |

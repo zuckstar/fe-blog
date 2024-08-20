@@ -55,6 +55,7 @@ export default defineConfig({
             { text: "React 合成事件", link: "/React/event.md" },
             { text: "React 性能优化", link: "/React/react_optimization.md" },
             { text: "Redux", link: "/React/react_redux.md" },
+            { text: "Hooks", link: "/React/react_hooks.md" },
           ],
         },
       ],
