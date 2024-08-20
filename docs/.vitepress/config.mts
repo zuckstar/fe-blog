@@ -31,7 +31,7 @@ export default defineConfig({
               link: "/JavaScript/call_apply_bind",
             },
             { text: "事件", link: "/JavaScript/event.md" },
-            { text: "代码题", link: "/JavaScript/code.md" },
+            { text: "Promise 相关代码题", link: "/JavaScript/promise_code.md" },
           ],
         },
       ],
