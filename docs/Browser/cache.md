@@ -4,13 +4,137 @@
 
 浏览器的缓存机制有四个方面，它们按照获取资源时请求的优先级排序如下：
 
-1. Memory Cache
+1. Service Worker Cache
 
-2. Service Worker Cache
+2. Memory Cache
 
-3. HTTP Cache
+3. Disk Cache
 
 4. Push Cache(HTTP2 新特性)
+
+## Server Worker Cache
+
+- 独立于主 JavaScript 线程（这就意味着它的运行丝毫不会影响我们主进程的加载性能）
+
+- 设计完全异步,大量使用 Promise（因为通常 Service Worker 通常会等待响应后继续，Promise 再合适不过了）
+
+- 不能访问 DOM，不能使用 XHR 和 localStorage
+
+- Service Worker 只能由 HTTPS 承载(出于安全考虑)
+
+Service Worker 离线缓存的文件存储在浏览器的缓存存储（Cache Storage）中。每个浏览器有自己的方式来管理这些缓存文件，通常存储在用户的本地文件系统中。但是，具体的存储位置是由浏览器管理的，开发者无法直接访问这些文件。
+
+### Service Worker 可以用于以下用途：
+
+- 离线支持：缓存资源，使应用在没有网络连接时仍能工作。
+
+- 网络请求拦截和处理：拦截网络请求，可以自定义请求响应，例如从缓存提供响应。
+
+- 推送通知：与推送服务结合，实现 web 推送通知功能。
+
+- 后台数据同步：在网络恢复时自动同步数据。
+
+- 性能优化：通过缓存策略减少服务器请求，提升加载速度。
+
+- Service Worker 运行在独立的线程中，不会阻塞主线程，从而提高应用的响应性。
+
+### 使用 Service Worker
+
+Service Worker 是一种独立于主线程之外的 Javascript 线程。它脱离于浏览器窗体，因此无法直接访问 DOM。这样独立的个性使得 Service Worker 的“个人行为”无法干扰页面的性能，这个“幕后工作者”可以帮我们实现离线缓存、消息推送和网络代理等功能。我们借助 Service worker 实现的离线缓存就称为 Service Worker Cache。
+
+Service Worker 的生命周期包括 install、active、working 三个阶段。一旦 Service Worker 被 install，它将始终存在，只会在 active 与 working 之间切换，除非我们主动终止它。这是它可以用来实现离线存储的重要先决条件。
+
+下面我们就通过实战的方式，一起见识一下 Service Worker 如何为我们实现离线缓存（注意看注释）： 我们首先在入口文件中插入这样一段 JS 代码，用以判断和引入 Service Worker：
+
+```js
+window.navigator.serviceWorker
+  .register("/test.js")
+  .then(function () {
+    console.log("注册成功");
+  })
+  .catch((err) => {
+    console.error("注册失败");
+  });
+```
+
+在 test.js 中，我们进行缓存的处理。假设我们需要缓存的文件分别是 test.html,test.css 和 test.js：
+
+```js
+// Service Worker会监听 install事件，我们在其对应的回调里可以实现初始化的逻辑
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    // 考虑到缓存也需要更新，open内传入的参数为缓存的版本号
+    caches.open("test-v1").then((cache) => {
+      return cache.addAll([
+        // 此处传入指定的需缓存的文件名
+        "/test.html",
+        "/test.css",
+        "/test.js",
+      ]);
+    })
+  );
+});
+
+// Service Worker会监听所有的网络请求，网络请求的产生触发的是fetch事件，我们可以在其对应的监听函数中实现对请求的拦截，进而判断是否有对应到该请求的缓存，实现从Service Worker中取到缓存的目的
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    // 尝试匹配该请求对应的缓存值
+    caches.match(event.request).then((res) => {
+      // 如果匹配到了，调用Server Worker缓存
+      if (res) {
+        return res;
+      }
+      // 如果没匹配到，向服务端发起这个资源请求
+      return fetch(event.request).then((response) => {
+        if (!response || response.status !== 200) {
+          return response;
+        }
+        // 请求成功的话，将请求缓存起来。
+        caches.open("test-v1").then(function (cache) {
+          cache.put(event.request, response);
+        });
+        return response.clone();
+      });
+    })
+  );
+});
+```
+
+试试吧:
+
+https://blog.csdn.net/weixin_41796631/article/details/89314876
+
+PS：大家注意 Server Worker 对协议是有要求的，必须以 https 协议为前提，本地调试的话用 localhost 和 127.0.0.1 的 ip 地址也是可以的。
+
+## Memory Cache
+
+MemoryCache，是指存在内存中的缓存。从优先级上来说，它是浏览器最先尝试去命中的一种缓存。从效率上来说，它是响应速度最快的一种缓存。
+
+内存缓存是快的，也是“短命”的。它和渲染进程“生死相依”，当进程结束后，也就是 tab 关闭以后，内存里的数据也将不复存在。
+
+那么哪些文件会被放入内存呢？
+
+事实上，这个划分规则，一直以来是没有定论的。不过想想也可以理解，内存是有限的，很多时候需要先考虑即时呈现的内存余量，再根据具体的情况决定分配给内存和磁盘的资源量的比重——资源存放的位置具有一定的随机性。
+
+虽然划分规则没有定论，但根据日常开发中观察的结果，包括我们开篇给大家展示的 Network 截图，我们至少可以总结出这样的规律：资源存不存内存，浏览器秉承的是“节约原则”。我们发现，Base64 格式的图片，几乎永远可以被塞进 memory cache，这可以视作浏览器为节省渲染开销的“自保行为”；此外，体积不大的 JS、CSS 文件，也有较大地被写入内存的几率——相比之下，较大的 JS、CSS 文件就没有这个待遇了，内存资源是有限的，它们往往被直接甩进磁盘。
+
+## Disk Cache
+
+Disk Cache 也就是存储在硬盘中的缓存，读取速度慢点，但是什么都能存储到磁盘中，比之 Memory Cache 胜在容量和存储时效性上。
+
+在所有浏览器缓存中，Disk Cache 覆盖面基本是最大的。它会根据 HTTP Herder 中的字段判断哪些资源需要缓存，哪些资源可以不请求直接使用，哪些资源已经过期需要重新请求。并且即使在跨站点的情况下，相同地址的资源一旦被硬盘缓存下来，就不会再次去请求数据。
+
+## Push Cache
+
+[HTTP/2 push is tougher than I thought](https://jakearchibald.com/2017/h2-push-tougher-than-i-thought/)
+
+Push Cache 是指 HTTP2 在 server push 阶段存在的缓存。这块的知识比较新，应用也还处于萌芽阶段，我找了好几个网站也没找到一个合适的案例来给大家做具体的介绍。但应用范围有限不代表不重要——HTTP2 是趋势、是未来。在它还未被推而广之的此时此刻，我仍希望大家能对 Push Cache 的关键特性有所了解：
+
+- Push Cache 是缓存的最后一道防线。浏览器只有在 Memory Cache、HTTP Cache 和 Service - Worker Cache 均未命中的情况下才会去询问 Push Cache。
+- Push Cache 是一种存在于会话阶段的缓存，当 session 终止时，缓存也随之释放。
+- 不同的页面只要共享了同一个 HTTP2 连接，那么它们就可以共享同一个 Push Cache。
+
+更多的特性和应用，期待大家可以在日后的开发过程中去挖掘和实践。
 
 ## HTTP 缓存机制
 
@@ -199,21 +323,9 @@ Chrome 官方给出的流程图：
 - Expires: 绝对时间
 - Last-Modified（If-Modified-Since） 和 ETag(If-None-Match) 配合协商缓存
 
-## Memory Cache
-
-MemoryCache，是指存在内存中的缓存。从优先级上来说，它是浏览器最先尝试去命中的一种缓存。从效率上来说，它是响应速度最快的一种缓存。
-
-内存缓存是快的，也是“短命”的。它和渲染进程“生死相依”，当进程结束后，也就是 tab 关闭以后，内存里的数据也将不复存在。
-
-那么哪些文件会被放入内存呢？
-
-事实上，这个划分规则，一直以来是没有定论的。不过想想也可以理解，内存是有限的，很多时候需要先考虑即时呈现的内存余量，再根据具体的情况决定分配给内存和磁盘的资源量的比重——资源存放的位置具有一定的随机性。
-
-虽然划分规则没有定论，但根据日常开发中观察的结果，包括我们开篇给大家展示的 Network 截图，我们至少可以总结出这样的规律：资源存不存内存，浏览器秉承的是“节约原则”。我们发现，Base64 格式的图片，几乎永远可以被塞进 memory cache，这可以视作浏览器为节省渲染开销的“自保行为”；此外，体积不大的 JS、CSS 文件，也有较大地被写入内存的几率——相比之下，较大的 JS、CSS 文件就没有这个待遇了，内存资源是有限的，它们往往被直接甩进磁盘。
-
 ### 浏览器是根据什么决定「from disk cache」与「from memory cache」？
 
-第一个现象(以图片为例):访问-> 200 -> 退出浏览器再进来-> 200(from disk cache) -> 刷新 -> 200(from memory cache)总结: 会不会是 chrome 很聪明的判断既然已经从 disk 拿来了， 第二次就内存拿吧 快。（笑哭)
+第一个现象(以图片为例):访问-> 200 -> 退出浏览器再进来-> 200(from disk cache) -> 刷新 -> 200(from memory cache)总结: 会不会是 chrome 很聪明的判断既然已经从 disk 拿来了， 第二次就内存拿吧 快。
 
 第二个现象(以图片为例):只要图片是 base64 我看都是 from memroy cache。
 
@@ -222,83 +334,3 @@ MemoryCache，是指存在内存中的缓存。从优先级上来说，它是浏
 第三个现象(以 js css 为例):个人在做静态测试的发现，大型的 js css 文件都是直接 disk cache 总结: chrome 会不会说，我擦，你这么大太占地方了。你就去硬盘里呆着吧。慢就慢点吧。
 
 第四个现象:隐私模式下，几乎都是 from memroy cache。总结: 隐私模式是吧，我不能暴露你东西，还是放到内存吧。你关，我死。
-
-## Service Worker Cache
-
-Service Worker 是一种独立于主线程之外的 Javascript 线程。它脱离于浏览器窗体，因此无法直接访问 DOM。这样独立的个性使得 Service Worker 的“个人行为”无法干扰页面的性能，这个“幕后工作者”可以帮我们实现离线缓存、消息推送和网络代理等功能。我们借助 Service worker 实现的离线缓存就称为 Service Worker Cache。
-
-Service Worker 的生命周期包括 install、active、working 三个阶段。一旦 Service Worker 被 install，它将始终存在，只会在 active 与 working 之间切换，除非我们主动终止它。这是它可以用来实现离线存储的重要先决条件。
-
-下面我们就通过实战的方式，一起见识一下 Service Worker 如何为我们实现离线缓存（注意看注释）： 我们首先在入口文件中插入这样一段 JS 代码，用以判断和引入 Service Worker：
-
-```js
-window.navigator.serviceWorker
-  .register("/test.js")
-  .then(function () {
-    console.log("注册成功");
-  })
-  .catch((err) => {
-    console.error("注册失败");
-  });
-```
-
-在 test.js 中，我们进行缓存的处理。假设我们需要缓存的文件分别是 test.html,test.css 和 test.js：
-
-```js
-// Service Worker会监听 install事件，我们在其对应的回调里可以实现初始化的逻辑
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    // 考虑到缓存也需要更新，open内传入的参数为缓存的版本号
-    caches.open("test-v1").then((cache) => {
-      return cache.addAll([
-        // 此处传入指定的需缓存的文件名
-        "/test.html",
-        "/test.css",
-        "/test.js",
-      ]);
-    })
-  );
-});
-
-// Service Worker会监听所有的网络请求，网络请求的产生触发的是fetch事件，我们可以在其对应的监听函数中实现对请求的拦截，进而判断是否有对应到该请求的缓存，实现从Service Worker中取到缓存的目的
-self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    // 尝试匹配该请求对应的缓存值
-    caches.match(event.request).then((res) => {
-      // 如果匹配到了，调用Server Worker缓存
-      if (res) {
-        return res;
-      }
-      // 如果没匹配到，向服务端发起这个资源请求
-      return fetch(event.request).then((response) => {
-        if (!response || response.status !== 200) {
-          return response;
-        }
-        // 请求成功的话，将请求缓存起来。
-        caches.open("test-v1").then(function (cache) {
-          cache.put(event.request, response);
-        });
-        return response.clone();
-      });
-    })
-  );
-});
-```
-
-试试吧:
-
-https://blog.csdn.net/weixin_41796631/article/details/89314876
-
-PS：大家注意 Server Worker 对协议是有要求的，必须以 https 协议为前提，本地调试的话用 localhost 和 127.0.0.1 的 ip 地址也是可以的。
-
-## Push Cache
-
-[HTTP/2 push is tougher than I thought](https://jakearchibald.com/2017/h2-push-tougher-than-i-thought/)
-
-Push Cache 是指 HTTP2 在 server push 阶段存在的缓存。这块的知识比较新，应用也还处于萌芽阶段，我找了好几个网站也没找到一个合适的案例来给大家做具体的介绍。但应用范围有限不代表不重要——HTTP2 是趋势、是未来。在它还未被推而广之的此时此刻，我仍希望大家能对 Push Cache 的关键特性有所了解：
-
-- Push Cache 是缓存的最后一道防线。浏览器只有在 Memory Cache、HTTP Cache 和 Service - Worker Cache 均未命中的情况下才会去询问 Push Cache。
-- Push Cache 是一种存在于会话阶段的缓存，当 session 终止时，缓存也随之释放。
-- 不同的页面只要共享了同一个 HTTP2 连接，那么它们就可以共享同一个 Push Cache。
-
-更多的特性和应用，期待大家可以在日后的开发过程中去挖掘和实践。
