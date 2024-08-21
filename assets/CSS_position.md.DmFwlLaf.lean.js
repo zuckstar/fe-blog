@@ -1,0 +1,1 @@
+import{_ as i,c as o,o as t,a4 as e}from"./chunks/framework.BENtzm8J.js";const u=JSON.parse('{"title":"定位","description":"","frontmatter":{},"headers":[],"relativePath":"CSS/position.md","filePath":"CSS/position.md"}'),a={name:"CSS/position.md"},s=e("",9),n=[s];function r(p,l,d,h,c,_){return t(),o("div",null,n)}const x=i(a,[["render",r]]);export{u as __pageData,x as default};
