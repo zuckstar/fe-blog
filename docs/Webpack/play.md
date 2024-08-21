@@ -615,6 +615,91 @@ module.exports = {
 };
 ```
 
+#### 自动清理构建目录产物
+
+使用 `clean-webpack-plugin` 来清理输出目录
+
+安装命令： `npm i clean-webpack-plugin -D`
+
+```js
+// 引入插件
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+
+// 在 plungins 处配置
+plugins: [new webpack.HotModuleReplacementPlugin(), new CleanWebpackPlugin()];
+```
+
+#### PostCSS 插件自动补齐 CSS3 前缀
+
+CSS3 的属性为什么需要前缀？
+
+![ ](image-7.png)
+
+例如：
+
+```css
+.box {
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -o-border-radius: 10px;
+  border-radius: 10px;
+}
+```
+
+根据 Can I Use 规则，使用 postcss、postcss-preset-env 自动补齐 CSS3 前缀。
+
+终端安装依赖命令：
+
+`npm install postcss-loader postcss postcss-preset-env --save-dev -D`
+
+配置如下：
+
+```js
+  module: {
+    rules: [
+      {
+        test: /.less$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: ["postcss-preset-env"],
+              },
+            },
+          },
+          "less-loader",
+        ],
+      },
+    ],
+  },
+```
+
+注意，还需要在 package.json 中增加下述配置才能生效：
+
+表示支持 > 1% 的浏览器，兼容最新的两个浏览器版本
+
+```json
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ]
+```
+
+此时重新执行 `npm run build`，可以看到 dist 目录中的 flex 属性有自动补齐的前缀:
+
+```css
+.search-text {
+  color: red;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  font-size: 20px;
+}
+```
+
 ## 进阶篇
 
 ### 1. 编写可维护的 webpack 构建配置
