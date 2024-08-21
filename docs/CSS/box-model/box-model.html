@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>box-model</title>
+    <style>
+        .content-box {
+            box-sizing: content-box;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid black;
+            width: 100px;
+        }
+        .border-box {
+            box-sizing: border-box;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid red;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <!-- width = content -->
+    <div style="border:1px solid green; display: inline-block;">
+        <div class="content-box" id="c1">
+            标准模型
+        </div>
+    </div>
+
+    <!-- width = border + padding + content -->
+    <div style="border:1px solid green; display: inline-block;">
+        <div class="border-box" id="c2">
+            怪异模型
+        </div>
+    </div>
+    <script>
+        let c1 = document.getElementById('c1')
+        // 只能获取元素的行内样式的属性值，如果没写行内样式则拿不到具体的值，默认为空串
+        console.log(c1.style.width) // ''
+        // 可以获取元素计算后样式的属性值, 返回字符串
+        console.log(window.getComputedStyle(c1).width) // '100px'
+    </script>
+</body>
+</html>

@@ -39,8 +39,11 @@ export default defineConfig({
         {
           text: "CSS 基础",
           items: [
+            { text: "盒子模型", link: "/CSS/box-model/" },
+            { text: "position 定位", link: "/CSS/position" },
             { text: "flex 布局", link: "/CSS/flex" },
             { text: "什么是 BFC?", link: "/CSS/bfc" },
+            { text: "CSS 垂直居中的方案", link: "/CSS/center" },
             { text: "移动端适配", link: "/CSS/mobile" },
           ],
         },
