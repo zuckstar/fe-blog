@@ -23,8 +23,12 @@
 | 算法                                                                                                             | 难度 | 完成次数 |
 | ---------------------------------------------------------------------------------------------------------------- | ---- | -------- |
 | [长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/description/)                          | 中等 | ❌       |
-| [无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/description/) | 中等 | ✅       |
+| [无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/description/) | 中等 | ✅ ✅    |
 | [螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/description/)                                              | 中等 | ✅       |
+| [合并区间](https://leetcode.cn/problems/merge-intervals/description/)                                            | 中等 | ✅       |
+| [三数之和](https://leetcode.cn/problems/3sum/description/)                                                       | 中等 |          |
+| [接雨水](https://leetcode.cn/problems/trapping-rain-water/)                                                      | 困难 | ❌       |
+| [搜索二维矩阵 2](https://leetcode.cn/problems/search-a-2d-matrix-ii/submissions/558077360)                       | 中等 | ❌       |
 
 ## 递归和回溯
 
@@ -35,9 +39,12 @@
 
 ## 树和图
 
-| 算法                                                                              | 难度 | 完成次数 |
-| --------------------------------------------------------------------------------- | ---- | -------- |
-| [二叉树的直径](https://leetcode.cn/problems/diameter-of-binary-tree/description/) | 简单 | ❌       |
+| 算法                                                                                                                     | 难度 | 完成次数 |
+| ------------------------------------------------------------------------------------------------------------------------ | ---- | -------- |
+| [二叉树的直径](https://leetcode.cn/problems/diameter-of-binary-tree/description/)                                        | 简单 | ❌       |
+| [二叉树最大路径和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/description/)                               | 困难 | ❌❌     |
+| [路径总和 3](https://leetcode.cn/problems/path-sum-iii/description/)                                                     | 中等 | ❌       |
+| [二叉树中和为目标值的路径](https://leetcode.cn/problems/er-cha-shu-zhong-he-wei-mou-yi-zhi-de-lu-jing-lcof/description/) | 中等 | ✅       |
 
 ## 链表
 
@@ -45,10 +52,17 @@
 | -------------------------------------------------------------------------------------- | ---- | -------- |
 | [合并两个有序链表](https://leetcode.cn/problems/merge-two-sorted-lists/)               | 简单 | ✅       |
 | [合并 k 个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/description/)    | 困难 | ✅       |
-| [LRU 缓存](https://leetcode.cn/problems/lru-cache/description/)                        | 中等 |          |
+| [LRU 缓存](https://leetcode.cn/problems/lru-cache/description/)                        | 中等 | ❌       |
 | [反转链表](https://leetcode.cn/problems/reverse-linked-list/description/)              | 简单 | ✅       |
-| [K 个一组翻转链表](https://leetcode.cn/problems/reverse-nodes-in-k-group/description/) | 困难 |          |
+| [K 个一组翻转链表](https://leetcode.cn/problems/reverse-nodes-in-k-group/description/) | 困难 | ✅       |
 | [两数相加](https://leetcode.cn/problems/add-two-numbers/description/)                  | 中等 |          |
+| [回文链表](https://leetcode.cn/problems/palindrome-linked-list/solutions/)             | 简单 | ✅       |
+
+## 栈与队列
+
+| 算法                                                                | 难度 | 完成次数 |
+| ------------------------------------------------------------------- | ---- | -------- |
+| [简化路径](https://leetcode.cn/problems/simplify-path/description/) | 中等 | ✅       |
 
 ## 排序和查找
 
@@ -124,10 +138,11 @@ var sortArray = function (nums) {
 
 ## 动态规划
 
-| 算法                                                                                       | 难度 | 完成次数 |
-| ------------------------------------------------------------------------------------------ | ---- | -------- |
-| [最大子数组和](https://leetcode.cn/problems/maximum-subarray/description/)                 | 中等 | ❌       |
-| [最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/description/) | 中等 |          |
+| 算法                                                                                           | 难度 | 完成次数 |
+| ---------------------------------------------------------------------------------------------- | ---- | -------- |
+| [最大子数组和](https://leetcode.cn/problems/maximum-subarray/description/)                     | 中等 | ❌       |
+| [最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/description/)     | 中等 |          |
+| [买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/description) | 简单 |          |
 
 ## 字符串处理
 

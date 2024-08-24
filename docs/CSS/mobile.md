@@ -148,6 +148,13 @@ html {
 
 响应式设计的基本原理是通过媒体查询检测不同的设备屏幕尺寸做处理，为了处理移动端，页面头部必须要有 meta 声明 viewport
 
+```html
+<meta
+  name="viewport"
+  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+/>
+```
+
 - meta：设置 viewport 不可被缩放
 
   - name=viewport

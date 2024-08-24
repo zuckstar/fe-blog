@@ -50,6 +50,10 @@ process.on("unhandledRejection", () => {});
 
 使用 nodemon，pm2 来管理 node 进程
 
+## 异步编程和流程控制
+
+- 回调函数 -> promise -> async/await
+
 ## 模块系统
 
 ### commonJS （流行）
@@ -103,6 +107,57 @@ buffer.slice();
 ```
 
 ## stream
+
+Stream 是 Node 核心模块。平时使用的都是对 Stream 的封装。
+
+- http
+  - req
+  - res
+- fs(把文件转换为流对象)
+  - createReadStream
+  - createWriteStream
+- zlib
+  - 流模式：一边读文件，一边解压缩，一边写入磁盘
+- crypto
+
+Stream 的应用场景就是 I/O 操作，处理端到端的数据交换
+
+缓冲模式：程序把需要处理的资源从磁盘加载到内存区域，等所有数据加载后再进行后续处理。
+
+流模式：程序只要加载到数据就会立刻处理，加载一点，处理一点，把资源分成一小小的一块，将数据块源源不断地传给调用端
+
+Stream：
+
+- Readable 可读流
+
+  - readble 事件、resume 事件、data 事件、close 事件、end 事件、error 事件
+
+- Writable 可写流
+
+  - close、finish、drain、error
+
+- Duplex 双工流
+
+  - transform 流
+
+  - passThrough 流
+
+- 流之间的交互 pipe 管道
+
+  - 管道（Pipe）是一种将可读流和可写流连接起来的机制。通过创建一个管道，可以将数据从一个可读流传输到一个可写流，从而实现数据的传输和转换。在管道中，数据会以流式的方式通过数据管道，直到全部数据被传输完毕。
+
+```js
+const { Readable } = require("stream");
+
+new Readable({
+  // 可读缓存区的最大字符
+  highWaterMark: 16 * 1024,
+  encoding: null,
+  objectMode: false,
+  // 将流push到缓冲区，内部调用
+  read: function () {},
+});
+```
 
 ## 事件模式
 

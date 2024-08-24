@@ -700,6 +700,94 @@ CSS3 的属性为什么需要前缀？
 }
 ```
 
+#### 移动端 CSS px 自动转换成 rem
+
+浏览器的分辨率类型比较多，最早使用 css 媒体查询，实现响应式，需要编写多套适配样式的代码，影响开发效率
+
+1. rem 单位，font-size Of root element，rem 是相对单位，浏览器 document.documentElement 的字体大小
+
+2. 使用 px2rem-loader，常见的 375px 和 750px 的设计稿
+
+```js
+{
+  loader: "px2rem-loader",
+  options: {
+    remUnit: 75,
+    remPrecision: 8
+  }
+}
+```
+
+手淘 lib-flexible 自动根据设备宽度计算 font-size
+
+```js
+(function flexible(window, document) {
+  var docEl = document.documentElement;
+
+  //
+  function setRemUnit() {
+    var rem = docEl.clientWidth / 10;
+    docEl.style.fontSize = rem + "px";
+  }
+
+  setRemUnit();
+
+  // reset rem unit on page resize
+  window.addEventListener("resize", setRemUnit);
+  window.addEventListener("pageshow", function (e) {
+    if (e.persisted) {
+      setRemUnit();
+    }
+  });
+})(window, document);
+```
+
+3. 执行脚本安装 `npm i px2rem-loader lib-flexible -D`
+
+4. webpack loader 配置
+
+```js
+{
+  loader: "px2rem-loader",
+  options: {
+    // 1rem = 75px
+    remUnit: 75,
+    // 小数点位数
+    remPrecision: 8,
+  },
+},
+```
+
+5. 在 script 脚本里面内联 lib-flexible 代码
+
+#### 静态资源内联
+
+资源内联的意义：
+
+- 代码层面
+
+  - 页面框架的初始化脚本
+  - 上报相关打点
+  - css 内联避免页面抖动
+
+- 请求层面：减少 HTTP 网络请求数
+  - 小图片或者字体内联 （url-loader）
+
+HTML 和 JS 内联：
+
+raw-loader 内联 html
+
+```js
+<script>${require('raw-loader'!babel-loader!./meta.html)}</script>
+```
+
+raw-loader 内联 css
+
+```js
+<script>${require('raw-loader'!babel-loader!../node_modules/lib-flexible)}</script>
+
+```
+
 ## 进阶篇
 
 ### 1. 编写可维护的 webpack 构建配置
@@ -719,3 +807,7 @@ CSS3 的属性为什么需要前缀？
 ## 参考文档
 
 https://juejin.cn/post/7135369506070724638
+
+```
+
+```
