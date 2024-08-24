@@ -1,1 +1,0 @@
-import{_ as i,c as s,o as a,a4 as l}from"./chunks/framework.BENtzm8J.js";const g=JSON.parse('{"title":"移动端适配","description":"","frontmatter":{},"headers":[],"relativePath":"CSS/mobile.md","filePath":"CSS/mobile.md"}'),p={name:"CSS/mobile.md"},n=l("",50),t=[n];function h(e,k,r,d,o,c){return a(),s("div",null,t)}const y=i(p,[["render",h]]);export{g as __pageData,y as default};
