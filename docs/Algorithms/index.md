@@ -26,9 +26,10 @@
 | [无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/description/) | 中等 | ✅ ✅    |
 | [螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/description/)                                              | 中等 | ✅       |
 | [合并区间](https://leetcode.cn/problems/merge-intervals/description/)                                            | 中等 | ✅       |
-| [三数之和](https://leetcode.cn/problems/3sum/description/)                                                       | 中等 |          |
+| [三数之和](https://leetcode.cn/problems/3sum/description/)                                                       | 中等 | ✅       |
 | [接雨水](https://leetcode.cn/problems/trapping-rain-water/)                                                      | 困难 | ❌       |
 | [搜索二维矩阵 2](https://leetcode.cn/problems/search-a-2d-matrix-ii/submissions/558077360)                       | 中等 | ❌       |
+| [盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/description/)                            | 中等 | ✅       |
 
 ## 递归和回溯
 
@@ -45,6 +46,7 @@
 | [二叉树最大路径和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/description/)                               | 困难 | ❌❌     |
 | [路径总和 3](https://leetcode.cn/problems/path-sum-iii/description/)                                                     | 中等 | ❌       |
 | [二叉树中和为目标值的路径](https://leetcode.cn/problems/er-cha-shu-zhong-he-wei-mou-yi-zhi-de-lu-jing-lcof/description/) | 中等 | ✅       |
+| [N 叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-n-ary-tree/description/)                                | 简单 | ✅       |
 
 ## 链表
 
@@ -57,12 +59,14 @@
 | [K 个一组翻转链表](https://leetcode.cn/problems/reverse-nodes-in-k-group/description/) | 困难 | ✅       |
 | [两数相加](https://leetcode.cn/problems/add-two-numbers/description/)                  | 中等 |          |
 | [回文链表](https://leetcode.cn/problems/palindrome-linked-list/solutions/)             | 简单 | ✅       |
+| [相交链表](https://leetcode.cn/problems/intersection-of-two-linked-lists/description/) | 简单 | ✅       |
 
 ## 栈与队列
 
 | 算法                                                                | 难度 | 完成次数 |
 | ------------------------------------------------------------------- | ---- | -------- |
 | [简化路径](https://leetcode.cn/problems/simplify-path/description/) | 中等 | ✅       |
+| [最小栈](https://leetcode.cn/problems/min-stack/description/)       | 中等 | ✅       |
 
 ## 排序和查找
 

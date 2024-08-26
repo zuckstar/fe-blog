@@ -85,7 +85,7 @@ export default defineConfig({
         {
           text: "Webpack",
           items: [
-            { text: "Webpack 原理", link: "/Webpack" },
+            { text: "Webpack 面试大纲", link: "/Webpack" },
             { text: "玩转 Webpack", link: "/Webpack/play" },
           ],
         },

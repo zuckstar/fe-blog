@@ -775,18 +775,305 @@ CSS3 的属性为什么需要前缀？
 
 HTML 和 JS 内联：
 
-raw-loader 内联 html
+通过配置 HtmlWebpackPlugin.meta 的方式，给 template 配置通用 meta 标签
 
 ```js
-<script>${require('raw-loader'!babel-loader!./meta.html)}</script>
+new HtmlWebpackPlugin({
+  template: path.join(__dirname, `src/${pageName}/index.html`),
+  filename: `${pageName}.html`,
+  meta: {
+    charset: "UTF-8",
+    viewport: "width=device-width, initial-scale=1.0",
+  },
+  chunks: [pageName],
+  inject: true,
+  minify: {
+    html5: true,
+    collapseWhitespace: true,
+    preserveLineBreaks: false,
+    minifyCSS: true,
+    minifyJS: true,
+    removeComments: false,
+  },
+});
 ```
 
-raw-loader 内联 css
+通过模版语法内联 js 脚本
 
 ```js
-<script>${require('raw-loader'!babel-loader!../node_modules/lib-flexible)}</script>
-
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Search</title>
+    <script type="text/javascript">
+      <%= require('raw-loader!babel-loader!../../node_modules/lib-flexible/flexible.js') %>
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
 ```
+
+#### 多页面应用打包通用方案
+
+多页面应用（MPA）概念：
+
+- 每一次页面跳转的时候，后台服务器都会返回一个新的 html 文档，这种类型的网站也就是多页网站，也叫做多页应用。
+
+- 优势：
+  - SEO 友好
+  - 页面之间是解耦的
+
+多页面打包基本思路：
+
+每个页面对应一个 entry，一个 html-webpack-plugin
+
+1. 手动配置入口
+
+缺点：每次新增或删除页面需要改 webpack 配置。
+
+```js
+module.exports = {
+  entry: {
+    index: "./src/index.js",
+    search: "./src/search.js",
+  },
+};
+```
+
+2. 动态获取 entry 和设置 html-webpack-plugin 数量
+
+利用 glob.sync
+
+- entry: `glob.sync(path.join(__dirname, './src/*/index.js'))`
+
+安装 glob `npm i glob -D`
+
+实现 setMpa 方法：
+
+```js
+const setMPA = () => {
+  const entry = {};
+  const htmlWebpackPlugins = [];
+  const entryFiles = glob.sync(path.join(__dirname, "./src/*/index.js"));
+
+  Object.keys(entryFiles).map((index) => {
+    const entryFile = entryFiles[index];
+
+    const match = entryFile.match(/src\/(.*)\/index\.js/);
+    const pageName = match && match[1];
+
+    entry[pageName] = entryFile;
+
+    htmlWebpackPlugins.push(
+      new HtmlWebpackPlugin({
+        template: path.join(__dirname, `src/${pageName}/index.html`),
+        filename: `${pageName}.html`,
+        meta: {
+          charset: "UTF-8",
+          viewport: "width=device-width, initial-scale=1.0",
+        },
+        scriptLoading: "blocking",
+        chunks: [pageName],
+        inject: true,
+        minify: {
+          html5: true,
+          collapseWhitespace: true,
+          preserveLineBreaks: false,
+          minifyCSS: true,
+          minifyJS: true,
+          removeComments: false,
+        },
+      })
+    );
+  });
+
+  return {
+    entry,
+    htmlWebpackPlugins,
+  };
+};
+
+const { entry, htmlWebpackPlugins } = setMPA();
+```
+
+完成配置：
+
+```js
+module.exports = {
+  entry: entry,
+  /* ... */
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: "[name]_[contenthash:8].css",
+    }),
+    new CleanWebpackPlugin(),
+  ].concat(htmlWebpackPlugins),
+};
+```
+
+#### 使用 sourcemap
+
+作用：通过 source map 定位到源代码
+
+- 科普文章：https://www.ruanyifeng.com/blog/2013/01/javascript_source_map.html
+
+开发环境开启，线上环境关闭。
+
+- 线上排查问题的时候，可以将 sourcemap 上传到错误监控系统
+
+source map 关键字：
+
+- eval : 使用 eval 包裹模块代码
+
+- source map : 产生 .map 文件
+
+- cheap: 不包含列信息
+
+- inline：将 .map 作为 DataURI 嵌入，不单独生成 .map 文件
+
+- module：包含 loader 的 sourcemap
+
+如何开启 source-map:
+
+```js
+module.exports = {
+  devtool: "source-map", // cheap-source-map | inline-source-map | eval
+};
+```
+
+#### 提取页面公共资源
+
+1. 基础库分离
+
+- 思路：将 react、react-dom 基础包通过 cdn 引入，不打入 bundle 中
+  - 使用 html-webpack-externals-plugin 分离基础库
+  - 使用 SplitChunkPlugin，webpack4 之后已经内置
+
+2. 使用 html-webpack-externals-plugin 分离基础库
+
+- 安装依赖 `npm i html-webpack-externals-plugin -D`
+
+- 配置
+
+```js
+const HtmlWebpackExternalsPlugin = require("html-webpack-externals-plugin");
+
+module.exports = {
+  plugins: [
+    new HtmlWebpackExternalsPlugin({
+      externals: [
+        {
+          module: "react",
+          entry: "https://now8.gtimg.com/now/lib/16.8.6/react.min.js",
+          global: "React",
+        },
+        {
+          module: "react-dom",
+          entry: "https://now8.gtimg.com/now/lib/16.8.6/react-dom.min.js",
+          global: "ReactDOM",
+        },
+      ],
+    }),
+  ],
+};
+```
+
+3. 使用 SplitChunkPlugin 分离基础库
+
+```js
+module.exports = {
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /(react|react-dom)/,
+          name: "vendors",
+          chunks: "all",
+        },
+      },
+    },
+  },
+};
+```
+
+然后在 HtmlWebpackPlugin 中将 vendors chunk 引入：
+
+```js
+modulex.exports = {
+  plugins: [
+    new HtmlWebpackPlugin({
+      chunks: ["vendors", pageName],
+    }),
+  ],
+};
+```
+
+#### treeshaking 的使用和原理分析
+
+概念: 1 个模块可能有多个方法，只要其中的某个方法使用到了，则整个文件都会被打包到 bundle 里面去，tree shaking 就是只把用到的方法打入 bundle，没用到的方法会在 uglify 阶段被擦除掉。
+
+使用 webpack 默认支持，在 .babelrc 里面设置 modules: false 即可。
+
+要求：必须是 ES6 语法，CJS 的方式不支持。
+
+原理：
+
+DCE（Elimination）
+
+- 代码不会被执行，不可到达
+- 代码执行的结果，不会被用到
+- 代码只会影响死变量（只写不读）
+
+Tree-shaking 原理
+
+利用 ES6 模块的特点：
+
+- 只能作为模块顶层的语句出现
+
+- import 的模块名只能是字符串常量
+
+- import binding 是 immutable 的
+
+代码擦除： uglify 阶段删除无用代码
+
+#### ScopeHoisting 使用和原理分析
+
+现象：构建后的代码存在大量闭包代码
+
+会导致什么问题？
+
+- 大量函数闭包包裹代码，导致体积增大（模块越多越明显）
+
+- 运行代码时创建的函数作用域变多，内存开销变大
+
+模块转换分析：
+
+- 被 webpack 转换后的模块会带上一层包裹
+- import 会被转换成 \_\_webpack_require
+
+进一步分析 webpack 的模块机制：
+
+- 打包出来是一个 IIFE （匿名闭包）
+
+- modules 是一个数组，每一项是一个模块初始化函数
+
+- \_\_webpack_require 用来加载模块，返回 module.exports
+
+- 通过 WEBPACK_REQUIRE_MOTHOD(0) 启动程序
+
+scope hoisting 原理
+
+原理：将所有模块的代码按照引用顺序放在一个函数作用域里，然后适当的重命名一些变量以防止变量命名冲突。
+
+对比：通过 scope hoisting 可以减少函数声明代码和内存开销。
+
+scope hoisting 使用
+
+- webpack mode 为 production 默认开启
+
+#### 代码分割和动态 import
 
 ## 进阶篇
 
@@ -806,8 +1093,4 @@ raw-loader 内联 css
 
 ## 参考文档
 
-https://juejin.cn/post/7135369506070724638
-
-```
-
-```
+https://juejin.cn/post/6969586812591456270#heading-38
