@@ -30,6 +30,7 @@
 | [接雨水](https://leetcode.cn/problems/trapping-rain-water/)                                                      | 困难 | ❌       |
 | [搜索二维矩阵 2](https://leetcode.cn/problems/search-a-2d-matrix-ii/submissions/558077360)                       | 中等 | ❌       |
 | [盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/description/)                            | 中等 | ✅       |
+| [多数元素](https://leetcode.cn/problems/majority-element/description/)                                           | 简单 | ❌       |
 
 ## 递归和回溯
 
@@ -37,6 +38,7 @@
 | -------------------------------------------------------------- | ---- | -------- |
 | [子集](https://leetcode.cn/problems/subsets/description)       | 中等 | ❌       |
 | [括号生成](https://leetcode.cn/problems/generate-parentheses/) | 中等 | ✅       |
+| [N 皇后](https://leetcode.cn/problems/n-queens/)               | 困难 | ❌       |
 
 ## 树和图
 
