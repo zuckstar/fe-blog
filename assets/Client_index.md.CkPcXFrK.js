@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as n}from"./chunks/framework.BENtzm8J.js";const l=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"Client/index.md","filePath":"Client/index.md"}'),a={name:"Client/index.md"};function r(i,o,s,c,d,p){return n(),t("div")}const m=e(a,[["render",r]]);export{l as __pageData,m as default};
