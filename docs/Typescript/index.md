@@ -4,6 +4,10 @@
 
 [练习题](https://hzm0321.github.io/apaas-front-doc/blog/TypeScript%20Challenge#13-hello-world)
 
+常见的内置 ts 函数要学会自己实现：
+
+`Pick`、`Awaited`、`ReturnType`、`Parameters`、`Record`、`Partial`、`Readonly`
+
 ## 常用关键字
 
 ### extends
@@ -288,7 +292,11 @@ type a = MyReturnType<typeof fn>; // 应推导出 "1 | 2"
 - 如果 T 是一个函数，则返回推断的返回值类型 R，如果 T 不是函数则直接返回 T 的类型
 
 ```ts
-type MyReturnType<T> = T extends (...args: any[]) => infer R ? R : T;
+type MyReturnType<T extends (args: any[]) => any> = T extends (
+  args: any[]
+) => infer R
+  ? R
+  : T;
 ```
 
 ### 2. 实现 Omit
