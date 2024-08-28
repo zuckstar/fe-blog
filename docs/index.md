@@ -14,6 +14,12 @@ hero:
       text: JavaScript
       link: /JavaScript
     - theme: alt
+      text: Typescript
+      link: /Typescript
+    - theme: alt
+      text: 系统设计
+      link: /SystemDesign
+    - theme: alt
       text: CSS
       link: /CSS
     - theme: alt
@@ -33,7 +39,13 @@ hero:
       link: /Webpack
     - theme: alt
       text: Node 和服务端知识
-      link: /api-examples
+      link: /Node
+    - theme: alt
+      text: 客户端知识
+      link: /Client
+    - theme: alt
+      text: 数学原理
+      link: /Math
 
 features:
   - title: Steven Paul Jobs
