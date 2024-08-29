@@ -2,7 +2,8 @@
 
 ## fiber 是什么?
 
-React Fiber 是对核心算法的一次重新实现。
+React Fiber 是对核心算法的一次重新实现。它的主要特点是渐进式渲染：能够将渲染工作分割成块，并将其分散到多个帧。
+
 Fiber 包含三层含义：
 
 - 作为架构来说，从 React 15 的 Stack Reconciler（递归调用栈） 升级为 Fiber Reconciler， 这是对核心算法的重构，实现异步可中断更新的特性
@@ -12,6 +13,26 @@ Fiber 包含三层含义：
 - 作为动态工作单位来说，每个 FiberNode 保存了本次更新中该组件改变的状态、以及要执行的工作（增删改）
 
 无论作为数据结构还是工作单位，它都是以 FiberNode 的身份存在，因为 React 16 的架构我们命名为 Fiber，所以它的协调器就是 Fiber Reconciler，它作为 React Element 或者最小工作单位，就叫做 FiberNode
+
+### Fiber 树的组织方式
+
+基于链表的树，父节点的 child 指向第一个子节点，子节点通过 sibling 访问他们的兄弟节点，return 指针再指向父节点。
+
+虽然损失了一些可读性，这个结构却有很多优势：
+
+- 调整节点位置很灵活，只要改改指针
+
+- 方便进行各种方式的遍历
+
+- 可以随时从某一个节点出发还原整棵树
+
+这一切，正符合 Fiber 架构的要求：遍历、分割、暂停……
+
+### Fiber 树的遍历方式
+
+从 beignWork 到 completeWork，先递再归。
+
+遍历需要一个指针指向当前遍历到的节点，workInProgress 就是这个指针，进一步是 performUnitOfWork 的 next 指针，遍历在指针为 null 的时候结束。
 
 ## 引入 fiber 的目的
 

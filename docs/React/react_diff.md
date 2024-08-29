@@ -2,6 +2,8 @@
 
 概览：
 
+Fiber 树是边构建、边遍历、边对比的，这样最大程度减少了遍历次数，也符合「可中断」的设定。深度优先遍历。
+
 目的是对 oldFiber 和 newChildren 进行比较，生成新的 workingProgessFiber 的过程
 
 什么是双缓冲 fiber 树机制？
@@ -14,6 +16,7 @@
 
 什么是 newChildren ？
 
+- 从 workInProgress.child 属性中取出 children，这个 children 不是 fiber 节点，而是组件 render 方法根据 JSX 结构 createElement 创建的 element 数组，这点不要混淆。
 - newChildren 就是在 Diff 过程中，用户构建的 JSX 对象（也可能是一个 JSX 对象数组）
 
 diff 算法分为单节点和多节点 diff
@@ -216,3 +219,5 @@ lastPlacedIndex 初始为 0，每遍历一个可复用的节点，如果 oldInde
 https://react.iamkasong.com/diff/prepare.html#diff%E6%98%AF%E5%A6%82%E 4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84
 
 https://juejin.cn/post/7202085514400038969#heading-3
+
+https://zhuanlan.zhihu.com/p/525244896
