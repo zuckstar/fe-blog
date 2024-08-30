@@ -56,7 +56,187 @@ React 提供了一系列的 Hooks，用于在函数组件中添加和管理状�
 
 ## 实现一个 useState
 
+利用数组实现一个简易的 useState
+
+```js
+let index = 0;
+
+let stateArray = [];
+
+function setState(initValue) {
+  // 利用闭包维护函数调用位置
+  const currentIndex = index++;
+
+  // 赋予初始值
+  stateArray[currentIndex] = stateArray[currentIndex] || initValue;
+
+  const setValue = function (newValue) {
+    // 更新 state
+    if (typeof newValue === "function") {
+      stateArray[currentIndex] = newValue(stateArray[currentIndex]);
+    } else {
+      stateArray[currentIndex] = newValue;
+    }
+    // 触发视图更新
+    render();
+  };
+
+  return [stateArray[currentIndex], setValue];
+}
+```
+
+利用链表实现一个 useState
+
+```js
+// 首次 render 时是 mount，二次 render 则是 update
+let isMount = true;
+
+// 在 react 中，使用链表结构来保存 hooks
+// 声明一个全局变量，通过这个全局变量来指向当前执行的 hooks
+let workInProgressHook = null;
+
+const fiber = {
+  memoizedState: null, // 在 function component 上，用来保存 hooks
+  stateNode: App, // 对于 function component 来说，用来保存对应的 Function
+};
+
+function run() {
+  workInProgressHook = fiber.memoizedState; // 当开始工作的时候，让 workinProgressHook 指向 fiber 中的第一个 hook
+  const app = fiber.stateNode();
+  isMount = false;
+  return app;
+}
+
+// 创建 update ，并将这些 update 形成一条单向环状链表
+function dispatchAction(queue, action) {
+  // 创建一个 update ，next 指向下一个 update
+  const update = {
+    action,
+    next: null,
+  };
+
+  if (queue.pending === null) {
+    // 不存在 update ， 和自己形成环状链表
+    update.next = update;
+  } else {
+    // 模拟添加操作
+    // 3 -> 0 -> 1 -> 2 -> 3
+    // 4 -> 0 -> 1 -> 2 -> 3 -> 4
+
+    update.next = queue.pending.next;
+    queue.pending.next = update;
+  }
+
+  // queue.pending  指向最后一个 update，update.next 就是指向第一个 update
+  queue.pending = update;
+
+  run();
+}
+
+function useState(initialState) {
+  let hook;
+
+  if (isMount) {
+    // 在 mount 的时候，需要创建 hook 数据结构
+
+    hook = {
+      queue: {
+        // 保存hook，action 被多次调用的场景
+        pending: null, // 单向循环链表
+      },
+      memoizedState: initialState, // 保存 hook 对应的 state 属性
+      next: null, // 用于指向下一个 hook，多个 hook 可以通过 next 指针形成单向链表
+    };
+
+    // 如果当前 fiber 的 memoizedState 即首个 hook 节点不存在，则将该节点设置为当前 hook
+    if (!fiber.memoizedState) {
+      fiber.memoizedState = hook;
+    } else {
+      // 如果存在 memoizedState，则使用 workInProgressHook.next 指针进行连接
+      workInProgressHook.next = hook;
+    }
+
+    workInProgressHook = hook;
+  } else {
+    // 在更新的时候，直接取当前 hook 即可。
+    hook = workInProgressHook;
+    workInProgressHook = workInProgressHook.next;
+  }
+
+  let baseState = hook.memoizedState;
+
+  if (hook.queue.pending) {
+    let firstUpdate = hook.queue.pending.next;
+
+    do {
+      const action = firstUpdate.action;
+      baseState = action(baseState);
+      firstUpdate = firstUpdate.next;
+    } while (firstUpdate !== hook.queue.pending.next); // 遍历链表，直到它不等于等一个链表为止
+
+    hook.queue.pending = null; // 代表 update 已经计算完毕
+  }
+
+  hook.memoizedState = baseState;
+
+  // dispatchAction 需要传递环状链表
+  return [baseState, dispatchAction.bind(null, hook.queue)];
+}
+
+function App() {
+  const [num, updateNum] = useState(0);
+  const [status, updateStatus] = useState(false);
+
+  console.log("isMount?", isMount);
+  console.log("num: ", num);
+  console.log("status: ", status);
+
+  return {
+    onClick() {
+      updateNum((num) => num + 1);
+      updateNum((num) => num + 1);
+      updateNum((num) => num + 1);
+    },
+    trigger() {
+      updateStatus((status) => !status);
+    },
+  };
+}
+
+window.app = run();
+```
+
 ## 实现一个 useEffect
+
+```js
+let index = 0;
+
+let lastDepsArray = [];
+
+let lastClearFnCallbacks = [];
+
+function useEffect(fn, deps) {
+  const lastDeps = lastDepsArray[index];
+
+  const isFirstRun = !lastDeps; // 首次执行，直接触发执行
+  const isDepsUndefined = !deps; // 没有依赖，每次都触发执行
+  const depsHasChanged = deps.some((dep, index) => dep != lastDeps[index]); // 依赖进行比较，变化也要触发执行
+
+  const flag = isFirstRun || isDepsUndefined || depsHasChanged;
+
+  if (flag) {
+    lastDepsArray[index] = deps;
+
+    if (index - 1 > 0 && lastClearFnCallbacks[index - 1]) {
+      lastClearFnCallbacks[index - 1]();
+    }
+
+    lastClearFnCallbacks[index] = fn();
+  }
+
+  index++;
+}
+```
 
 ## useRef 有什么作用？
 
@@ -352,3 +532,5 @@ react 函数提供了一个普通 js 函数没有的作用域（上下文），�
 [一文讲透 React Hooks 闭包陷阱](https://juejin.cn/post/7230819482012237861)
 
 [从根上理解 React Hooks 的闭包陷阱](https://juejin.cn/post/7093931163500150820)
+
+[理解 hooks 原理 ---简单实现 useState/useEffec](https://juejin.cn/post/7064134489533841439)
